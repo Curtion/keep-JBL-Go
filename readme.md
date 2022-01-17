@@ -1,3 +1,8 @@
 jbl-go 蓝牙音箱在没有声音输出时会自动休眠，此程序尝试自动输出人耳听不到的音频来保持音箱长久工作。
 
-测试完成，JBL-Go 在播放低频音频时仍然会休眠，猜测音箱并不是检测音频信号来处理休眠的，而是检测喇叭输出的电流，当声音过低时仍然会执行休眠程序。
+音频文件通过以下命令生成：
+
+`ffmpeg -f lavfi -i "sine=frequency=15000:sample_rate=48000:duration=5" -c:a pcm_s16le slient.wav`
+
+参考文章：
+https://www.simaek.com/archives/15/
