@@ -8,6 +8,8 @@ jbl-go 蓝牙音箱在没有声音输出时会自动休眠，此程序尝试自�
 
 `ffmpeg -f lavfi -i "sine=frequency=30000:sample_rate=48000:duration=1" -af "volume=-30dB" -c:a pcm_s16le slient.wav`
 
+目前这个音量在我这里运行得很好，既几乎听不到声音，音箱又不会休眠。
+
 参考文章：
 https://www.simaek.com/archives/15/
 
