@@ -4,12 +4,27 @@ on:
       - "master"
 
 jobs:
-  release:
-    runs-on: ubuntu-latest
+  build_for_mac:
+    name: MacOS
+    runs-on: macos-10.15
     steps:
-      - uses: actions/checkout@v2
-      - uses: taiki-e/upload-rust-binary-action@v1
+      - uses: actions/checkout@master
+      - uses: actions-rs/cargo@v1
         with:
-          bin: keep-jbl-go
+          command: build
+          args: --release
+      - name: Rename binary
+        run: mv target/release/flydb flydb-macos64
+      - name: Upload to release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl \
+            -f \
+            -sSL \
+            -XPOST \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Content-Length: $(stat -f%z flydb-macos64)" \
+            -H "Content-Type: application/octet-stream" \
+            --upload-file "flydb-macos64" \
+            "https://uploads.github.com/repos/$GITHUB_REPOSITORY/releases/$(jq --raw-output '.release.id' $GITHUB_EVENT_PATH)/assets?name=flydb-macos64"
