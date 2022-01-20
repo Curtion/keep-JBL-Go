@@ -17,6 +17,8 @@ jobs:
           - x86_64-pc-windows-msvc
     steps:
       - uses: actions/checkout@v2
+      - name: Install libsdl2
+        run: sudo apt install libsdl2-dev
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
