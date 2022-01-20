@@ -20,7 +20,7 @@ jobs:
       - name: update
         run: sudo apt-get update
       - name: Install libsdl2
-        run: sudo apt install libsdl2-dev
+        run: sudo apt install librust-alsa-sys-dev
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
