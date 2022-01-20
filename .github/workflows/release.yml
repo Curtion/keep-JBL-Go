@@ -1,30 +1,31 @@
 on:
-  workflow_dispatch:
-    branches:
-      - "master"
+  push:
+    tags:
+      - "v*.*.*"
+
+name: Cross-compile
 
 jobs:
-  build_for_mac:
-    name: MacOS
-    runs-on: macos-10.15
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target:
+          - x86_64-unknown-linux-gnu
+          - x86_64-apple-darwin
+          - x86_64-pc-windows-msvc
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: ${{ matrix.target }}
+          override: true
       - uses: actions-rs/cargo@v1
         with:
+          use-cross: true
           command: build
-          args: --release
-      - name: Rename binary
-        run: mv target/release/keep_jbl_go keep_jbl_go-macos64
-      - name: Upload to release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          curl \
-            -f \
-            -sSL \
-            -XPOST \
-            -H "Authorization: token $GITHUB_TOKEN" \
-            -H "Content-Length: $(stat -f%z keep_jbl_go-macos64)" \
-            -H "Content-Type: application/octet-stream" \
-            --upload-file "keep_jbl_go-macos64" \
-            "https://uploads.github.com/repos/$GITHUB_REPOSITORY/releases/$(jq --raw-output '.release.id' $GITHUB_EVENT_PATH)/assets?name=keep_jbl_go-macos64"
+          args: --release --target=${{ matrix.target }}
+      - name: Release
+        uses: softprops/action-gh-release@v1
