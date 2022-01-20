@@ -14,7 +14,7 @@ jobs:
           command: build
           args: --release
       - name: Rename binary
-        run: mv target/release/keep-jbl-go keep-jbl-go-macos64
+        run: mv target/release/keep_jbl_go keep_jbl_go-macos64
       - name: Upload to release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -24,7 +24,7 @@ jobs:
             -sSL \
             -XPOST \
             -H "Authorization: token $GITHUB_TOKEN" \
-            -H "Content-Length: $(stat -f%z keep-jbl-go-macos64)" \
+            -H "Content-Length: $(stat -f%z keep_jbl_go-macos64)" \
             -H "Content-Type: application/octet-stream" \
-            --upload-file "keep-jbl-go-macos64" \
-            "https://uploads.github.com/repos/$GITHUB_REPOSITORY/releases/$(jq --raw-output '.release.id' $GITHUB_EVENT_PATH)/assets?name=keep-jbl-go-macos64"
+            --upload-file "keep_jbl_go-macos64" \
+            "https://uploads.github.com/repos/$GITHUB_REPOSITORY/releases/$(jq --raw-output '.release.id' $GITHUB_EVENT_PATH)/assets?name=keep_jbl_go-macos64"
